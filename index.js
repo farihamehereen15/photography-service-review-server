@@ -1,6 +1,7 @@
 const express = require('express')
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-const cors = require('cors')
+const cors = require('cors');
+const { query } = require('express');
 const app = express()
 require('dotenv').config()
 const port = process.env.PORT || 5000
@@ -56,6 +57,21 @@ async function run() {
 
         })
 
+        //myreview get
+
+        app.get('/review', async (req, res) => {
+            console.log(req.query)
+            let query = {};
+            if (req.query.email) {
+                query = {
+                    email: req.query.email
+                }
+            }
+            const cursor = reviewCollection.find(query);
+            const review = await cursor.toArray();
+            res.send(review);
+        })
+
         //review post 
         app.post('/review', async (req, res) => {
             // const id = req.params.id
@@ -63,6 +79,8 @@ async function run() {
             const result = await reviewCollection.insertOne(review);
             res.send(result);
         })
+
+
 
 
 
